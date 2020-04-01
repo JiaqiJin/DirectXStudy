@@ -86,7 +86,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Empty\EmptyApplication.cpp" />
+    <ClCompile Include="Framework\Common\BaseApplication.cpp" />
+    <ClCompile Include="Framework\Common\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Framework\Common\BaseApplication.h" />
+    <ClInclude Include="Framework\Interface\IApplication.h" />
+    <ClInclude Include="Framework\Interface\Interface.h" />
+    <ClInclude Include="Framework\Interface\IRuntimeModule.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
