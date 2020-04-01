@@ -27,7 +27,7 @@
     <ClCompile Include="Framework\Common\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Plataform\Windows\helloengine_win.c">
+    <ClCompile Include="Plataform\Windows\helloengine_d2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

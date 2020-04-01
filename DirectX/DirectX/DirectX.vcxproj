@@ -94,7 +94,7 @@
     <ClCompile Include="Framework\Common\BaseApplication.cpp" />
     <ClCompile Include="Framework\Common\GraphicsManager.cpp" />
     <ClCompile Include="Framework\Common\main.cpp" />
-    <ClCompile Include="Plataform\Windows\helloengine_win.c" />
+    <ClCompile Include="Plataform\Windows\helloengine_d2d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Common\BaseApplication.h" />

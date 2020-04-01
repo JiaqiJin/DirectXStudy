@@ -1,10 +1,11 @@
 // include the basic windows header file
 #pragma comment(lib, "d2d1")
+
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
 
-#include<d2d1.h>
+#include <d2d1.h>
 
 ID2D1Factory* pFactory = nullptr;
 ID2D1HwndRenderTarget* pRenderTarget = nullptr;
@@ -112,8 +113,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 // display the window on the screen
 	ShowWindow(hWnd, nCmdShow);
-
-	while (true);
 
 	// enter the main loop:
 
