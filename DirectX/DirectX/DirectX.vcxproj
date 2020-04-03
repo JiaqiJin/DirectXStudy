@@ -146,7 +146,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="helloengine_win.c" />
+    <ClCompile Include="Core\d3dApp.cpp" />
+    <ClCompile Include="Core\DXTrace.cpp" />
+    <ClCompile Include="Core\GameApp.cpp" />
+    <ClCompile Include="Core\GameTimer.cpp" />
+    <ClCompile Include="Core\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\d3dApp.h" />
+    <ClInclude Include="Core\d3dUtil.h" />
+    <ClInclude Include="Core\DXTrace.h" />
+    <ClInclude Include="Core\GameApp.h" />
+    <ClInclude Include="Core\GameTimer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
