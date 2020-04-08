@@ -18,9 +18,6 @@
     <ClCompile Include="Core\d3dApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\GameTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\DXTrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,10 +30,16 @@
     <ClCompile Include="Core\d3dUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Mouse.cpp">
+    <ClCompile Include="Core\Utility\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Keyboard.cpp">
+    <ClCompile Include="Core\Utility\Keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utility\GameTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MeshObj\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,24 +56,37 @@
     <ClInclude Include="Core\GameApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\GameTimer.h">
+    <ClInclude Include="Core\Utility\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Mouse.h">
+    <ClInclude Include="Core\Utility\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Keyboard.h">
+    <ClInclude Include="Core\Utility\GameTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MeshObj\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\LightHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\HLSL\Triangle.hlsli" />
     <None Include="Core\HLSL\Cube.hlsli" />
+    <None Include="Core\HLSL\HLSLI\LightHelper.hlsli" />
+    <None Include="Core\HLSL\HLSLI\Light.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Core\HLSL\Triangle_VS.hlsl" />
     <FxCompile Include="Core\HLSL\Triangle_PS.hlsl" />
     <FxCompile Include="Core\HLSL\Cube_VS.hlsl" />
     <FxCompile Include="Core\HLSL\Cube_PS.hlsl" />
+    <FxCompile Include="Core\HLSL\Light_PS.hlsl" />
+    <FxCompile Include="Core\HLSL\Light_VS.hlsl" />
   </ItemGroup>
 </Project>

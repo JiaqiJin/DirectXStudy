@@ -1,4 +1,4 @@
-//--------------------------------------------------------------------------------------
+﻿//--------------------------------------------------------------------------------------
 // File: Mouse.h
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -29,21 +29,21 @@ namespace DirectX
 
 		enum Mode
 		{
-			MODE_ABSOLUTE = 0,
-			MODE_RELATIVE,
+			MODE_ABSOLUTE = 0,// 绝对坐标模式，每次状态更新xy值为屏幕像素坐标，且鼠标可见
+			MODE_RELATIVE, // 相对运动模式，每次状态更新xy值为每一帧之间的像素位移量，且鼠标不可见
 		};
 
 		struct State
 		{
-			bool    leftButton;
-			bool    middleButton;
-			bool    rightButton;
-			bool    xButton1;
-			bool    xButton2;
-			int     x;
-			int     y;
-			int     scrollWheelValue;
-			Mode    positionMode;
+			bool    leftButton;         // 鼠标左键被按下
+			bool    middleButton;       // 鼠标滚轮键被按下
+			bool    rightButton;        // 鼠标右键被按下
+			bool    xButton1;           // 忽略
+			bool    xButton2;           // 忽略
+			int     x;                  // 绝对坐标x或相对偏移量
+			int     y;                  // 绝对坐标y或相对偏移量
+			int     scrollWheelValue;   // 滚轮滚动累积值
+			Mode    positionMode;       // 鼠标模式
 		};
 
 		class ButtonStateTracker
@@ -65,11 +65,11 @@ namespace DirectX
 
 #pragma prefast(suppress: 26495, "Reset() performs the initialization")
 			ButtonStateTracker() noexcept { Reset(); }
-
+			// 在每一帧的时候应提供Mouse的当前状态去更新它
 			void __cdecl Update(const State& state);
 
 			void __cdecl Reset() noexcept;
-
+			// 获取上一帧的鼠标事件，应当在Update之前使用，否则变为获取当前帧的状态
 			State __cdecl GetLastState() const { return lastState; }
 
 		private:
