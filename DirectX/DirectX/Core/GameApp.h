@@ -14,7 +14,7 @@ public:
 	};
 
 	//Constant buffers are just blocks of data that can store
-	//different variables that may be accessed by a shader.
+	//different variables that may be accessed by a shader. 
 	struct ConstantBuffer
 	{
 		DirectX::XMMATRIX world;

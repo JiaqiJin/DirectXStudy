@@ -151,7 +151,9 @@
     <ClCompile Include="Core\DXTrace.cpp" />
     <ClCompile Include="Core\GameApp.cpp" />
     <ClCompile Include="Core\GameTimer.cpp" />
+    <ClCompile Include="Core\Keyboard.cpp" />
     <ClCompile Include="Core\Main.cpp" />
+    <ClCompile Include="Core\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\d3dApp.h" />
@@ -159,6 +161,8 @@
     <ClInclude Include="Core\DXTrace.h" />
     <ClInclude Include="Core\GameApp.h" />
     <ClInclude Include="Core\GameTimer.h" />
+    <ClInclude Include="Core\Keyboard.h" />
+    <ClInclude Include="Core\Mouse.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\HLSL\Cube.hlsli" />
