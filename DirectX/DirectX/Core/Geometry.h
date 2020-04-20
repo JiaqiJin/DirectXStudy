@@ -1,10 +1,5 @@
-﻿//***************************************************************************************
-// Geometry.h by X_Jun(MKXJun) (C) 2018-2020 All Rights Reserved.
-// Licensed under the MIT License.
+﻿
 //https://github.com/microsoft/DirectXTK/blob/master/Inc/GeometricPrimitive.h
-//
-// Generate common geometry meshes.
-//***************************************************************************************
 
 #ifndef GEOMETRY_H_
 #define GEOMETRY_H_
