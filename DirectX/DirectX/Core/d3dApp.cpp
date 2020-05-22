@@ -1,5 +1,5 @@
 ﻿#include "d3dApp.h"
-#include "d3dUtil.h"
+#include "Utils/d3dUtil.h"
 #include "DXTrace.h"
 #include <sstream>
 
@@ -21,7 +21,7 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
-	m_MainWndCaption(L"Lighting"),
+	m_MainWndCaption(L"DirectX11 Initialization"),
 	m_ClientWidth(800),
 	m_ClientHeight(600),
 	m_hMainWnd(nullptr),
@@ -39,8 +39,6 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	m_pDepthStencilView(nullptr)
 {
 	ZeroMemory(&m_ScreenViewport, sizeof(D3D11_VIEWPORT));
-
-
 	// 让一个全局指针获取这个类，这样我们就可以在Windows消息处理的回调函数
 	// 让这个类调用内部的回调函数了
 	g_pd3dApp = this;
@@ -97,15 +95,11 @@ int D3DApp::Run()
 			}
 		}
 	}
-
 	return (int)msg.wParam;
 }
 
 bool D3DApp::Init()
 {
-	m_pMouse = std::make_unique<DirectX::Mouse>();
-	m_pKeyboard = std::make_unique<DirectX::Keyboard>();
-
 	if (!InitMainWindow())
 		return false;
 
@@ -141,9 +135,7 @@ void D3DApp::OnResize()
 
 	// 设置调试对象名
 	D3D11SetDebugObjectName(backBuffer.Get(), "BackBuffer[0]");
-
 	backBuffer.Reset();
-
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 
@@ -153,7 +145,7 @@ void D3DApp::OnResize()
 	depthStencilDesc.ArraySize = 1;
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// 要使用 4X MSAA?
+	// 要使用 4X MSAA? --需要给交换链设置MASS参数
 	if (m_Enable4xMsaa)
 	{
 		depthStencilDesc.SampleDesc.Count = 4;
@@ -165,8 +157,6 @@ void D3DApp::OnResize()
 		depthStencilDesc.SampleDesc.Quality = 0;
 	}
 
-
-
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
@@ -175,7 +165,6 @@ void D3DApp::OnResize()
 	// 创建深度缓冲区以及深度模板视图
 	HR(m_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_pDepthStencilBuffer.GetAddressOf()));
 	HR(m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), nullptr, m_pDepthStencilView.GetAddressOf()));
-
 
 	// 将渲染目标视图和深度/模板缓冲区结合到管线
 	m_pd3dImmediateContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
@@ -196,6 +185,7 @@ void D3DApp::OnResize()
 	D3D11SetDebugObjectName(m_pRenderTargetView.Get(), "BackBufferRTV[0]");
 
 }
+
 
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -306,41 +296,21 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
-		// 监测这些键盘/鼠标事件
-	case WM_INPUT:
 
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-	case WM_XBUTTONDOWN:
-
+		return 0;
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-	case WM_XBUTTONUP:
-
-	case WM_MOUSEWHEEL:
-	case WM_MOUSEHOVER:
+		return 0;
 	case WM_MOUSEMOVE:
-		m_pMouse->ProcessMessage(msg, wParam, lParam);
-		return 0;
-
-	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
-		return 0;
-
-	case WM_ACTIVATEAPP:
-		m_pMouse->ProcessMessage(msg, wParam, lParam);
-		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
-
 
 bool D3DApp::InitMainWindow()
 {
@@ -380,6 +350,7 @@ bool D3DApp::InitMainWindow()
 	UpdateWindow(m_hMainWnd);
 
 	return true;
+
 }
 
 bool D3DApp::InitDirect3D()
@@ -544,6 +515,7 @@ bool D3DApp::InitDirect3D()
 	OnResize();
 
 	return true;
+
 }
 
 void D3DApp::CalculateFrameStats()
@@ -571,4 +543,3 @@ void D3DApp::CalculateFrameStats()
 		timeElapsed += 1.0f;
 	}
 }
-

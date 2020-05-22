@@ -1,13 +1,9 @@
-﻿
-// DirectX错误追踪 
-// DirectX Error Tracing. 
-//***************************************************************************************
+﻿// DirectX Error Tracing.
 
 #ifndef DXTRACE_H
 #define DXTRACE_H
 
 #include <Windows.h>
-
 // ------------------------------
 // DXTraceW函数
 // ------------------------------
@@ -18,8 +14,8 @@
 // [In]strMsg			用于帮助调试定位的字符串，通常传递L#x(可能为NULL)
 // [In]bPopMsgBox       如果为TRUE，则弹出一个消息弹窗告知错误信息
 // 返回值: 形参hr
-HRESULT WINAPI DXTraceW(_In_z_ const WCHAR* strFile, _In_ DWORD dwLine, _In_ HRESULT hr, _In_opt_ const WCHAR* strMsg, _In_ bool bPopMsgBox);
 
+HRESULT WINAPI DXTraceW(_In_z_ const WCHAR* strFile, _In_ DWORD dwLine, _In_ HRESULT hr, _In_opt_ const WCHAR* strMsg, _In_ bool bPopMsgBox);
 
 // ------------------------------
 // HR宏

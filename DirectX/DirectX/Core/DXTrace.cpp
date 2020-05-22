@@ -10,7 +10,6 @@ HRESULT WINAPI DXTraceW(_In_z_ const WCHAR* strFile, _In_ DWORD dwLine, _In_ HRE
 	WCHAR strBufferMsg[1024];
 	WCHAR strBufferHR[40];
 	WCHAR strBuffer[3000];
-
 	swprintf_s(strBufferLine, 128, L"%lu", dwLine);
 	if (strFile)
 	{

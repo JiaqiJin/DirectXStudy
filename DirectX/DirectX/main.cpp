@@ -1,10 +1,9 @@
-﻿#include "GameApp.h"
+﻿#include "Core/GameApp.h"
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance,
 	_In_ LPSTR cmdLine, _In_ int showCmd)
 {
 	// 这些参数不使用
-
 	UNREFERENCED_PARAMETER(prevInstance);
 	UNREFERENCED_PARAMETER(cmdLine);
 	UNREFERENCED_PARAMETER(showCmd);
@@ -13,10 +12,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	GameApp theApp(hInstance);
+	GameApp game(hInstance);
 
-	if (!theApp.Init())
+	if (!game.Init())
 		return 0;
 
-	return theApp.Run();
+	return game.Run();
 }
