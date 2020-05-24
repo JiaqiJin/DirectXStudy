@@ -54,8 +54,11 @@
   <ItemGroup>
     <FxCompile Include="Core\HLSL\Triangle_PS.hlsl" />
     <FxCompile Include="Core\HLSL\Triangle_VS.hlsl" />
+    <FxCompile Include="Core\HLSL\Cube_PS.hlsl" />
+    <FxCompile Include="Core\HLSL\Cube_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\HLSL\Triangle.hlsli" />
+    <None Include="Core\HLSL\Cube.hlsli" />
   </ItemGroup>
 </Project>

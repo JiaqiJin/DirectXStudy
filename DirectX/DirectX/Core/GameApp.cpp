@@ -41,7 +41,14 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {
-
+	static float phi = 0.0f, theta = 0.0f;
+	phi += 0.0001f, theta += 0.00015f;
+	m_CBuffer.world = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
+	// 更新常量缓冲区，让立方体转起来
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HR(m_pd3dImmediateContext->Map(m_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(m_CBuffer), &m_CBuffer, sizeof(m_CBuffer));
+	m_pd3dImmediateContext->Unmap(m_pConstantBuffer.Get(), 0);
 }
 
 void GameApp::DrawScene()
@@ -53,7 +60,7 @@ void GameApp::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	m_pd3dImmediateContext->Draw(3, 0);
+	m_pd3dImmediateContext->DrawIndexed(36,0, 0);
 	HR(m_pSwapChain->Present(0, 0));
 }
 
@@ -62,14 +69,14 @@ bool GameApp::InitEffect()
 	ComPtr<ID3DBlob> blob;
 
 	// 创建顶点着色器 Create vertex shader
-	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(CreateShaderFromFile(L"HLSL\\Cube_VS.cso", L"HLSL\\Cube_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
-	// 创建并绑定顶点布局 Create and bind vertex layout
+	// 创建并绑定顶点布局 Create and bind vertex layout (VeetexIn , VertexPosColor ...)
 	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
 		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
 
 	// 创建像素着色器
-	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(CreateShaderFromFile(L"HLSL\\Cube_PS.cso", L"HLSL\\Cube_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 
 	return true;
@@ -79,11 +86,26 @@ bool GameApp::InitEffect()
 bool GameApp::InitResource()
 {
 	// 设置三角形顶点
+	// ******************
+	// 设置立方体顶点
+	//    5________ 6
+	//    /|      /|
+	//   /_|_____/ |
+	//  1|4|_ _ 2|_|7
+	//   | /     | /
+	//   |/______|/
+	//  0       3
+
 	VertexPosColor vertices[] =
 	{
-		{ XMFLOAT3(0.0f, 0.5f, 0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) }
 	};
 	//Create a buffer 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
@@ -100,19 +122,81 @@ bool GameApp::InitResource()
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
 	// ******************
-	// 给渲染管线各个阶段绑定好所需资源
+	// 索引数组
 	//
+	DWORD indices[] = {
+		// 正面
+		0, 1, 2,
+		2, 3, 0,
+		// 左面
+		4, 5, 1,
+		1, 0, 4,
+		// 顶面
+		1, 5, 6,
+		6, 2, 1,
+		// 背面
+		7, 6, 5,
+		5, 4, 7,
+		// 右面
+		3, 2, 6,
+		6, 7, 3,
+		// 底面
+		4, 0, 3,
+		3, 7, 4
+	};
 
-	// 输入装配阶段的顶点缓冲区设置
+	// 设置索引缓冲区描述 indices buffer desc
+	D3D11_BUFFER_DESC ibd;
+	ZeroMemory(&ibd, sizeof(ibd));
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof indices;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+
+	// 新建索引缓冲区 Nuevo buffer de indice 
+	InitData.pSysMem = indices;
+	HR(m_pd3dDevice->CreateBuffer(&ibd, &InitData, m_pIndexBuffer.GetAddressOf()));
+	// 输入装配阶段的索引缓冲区设置 buffer indices to assembly stage
+	m_pd3dImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	// ******************
+	// 设置常量缓冲区描述
+	//Set constant buffer description (global constants)
+	D3D11_BUFFER_DESC cbd;
+	ZeroMemory(&cbd, sizeof(cbd));
+	cbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbd.ByteWidth = sizeof(ConstantBuffer);
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	// 新建常量缓冲区，不使用初始数据
+	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffer.GetAddressOf()));
+	// 初始化常量缓冲区的值
+	// Initialize the value of the constant buffer
+	m_CBuffer.world = XMMatrixIdentity();	// 单位矩阵的转置是它本身 Identidad matrix
+	m_CBuffer.view = XMMatrixTranspose(XMMatrixLookAtLH(
+		XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
+		XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	));
+	m_CBuffer.proj = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
+
+	// ******************
+	// 给渲染管线各个阶段绑定好所需资源
+	//Render pipeline input assembly stage ,set vertex buffer
+
+	// 输入装配阶段的顶点缓冲区设置 Enter vertex buffer settings during assembly
 	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
 	UINT offset = 0;						// 起始偏移量
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 	// 设置图元类型，设定输入布局 primitive type,input layout
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
+	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get()); //Bind an input-layout object to the input-assembler stage.
 	// 将着色器绑定到渲染管线 Bind the shader to the rendering pipeline
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
+	// 将更新好的常量缓冲区绑定到顶点着色器
+	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 	// ******************
@@ -120,8 +204,10 @@ bool GameApp::InitResource()
 	//
 	D3D11SetDebugObjectName(m_pVertexLayout.Get(), "VertexPosColorLayout");
 	D3D11SetDebugObjectName(m_pVertexBuffer.Get(), "VertexBuffer");
-	D3D11SetDebugObjectName(m_pVertexShader.Get(), "Trangle_VS");
-	D3D11SetDebugObjectName(m_pPixelShader.Get(), "Trangle_PS");
+	D3D11SetDebugObjectName(m_pIndexBuffer.Get(), "IndexBuffer");
+	D3D11SetDebugObjectName(m_pConstantBuffer.Get(), "ConstantBuffer");
+	D3D11SetDebugObjectName(m_pVertexShader.Get(), "Cube_VS");
+	D3D11SetDebugObjectName(m_pPixelShader.Get(), "Cube_PS");
 
 	return true;
 }
