@@ -62,15 +62,22 @@
     <ClInclude Include="Core\Utils\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\LightHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Core\HLSL\Triangle_PS.hlsl" />
     <FxCompile Include="Core\HLSL\Triangle_VS.hlsl" />
     <FxCompile Include="Core\HLSL\Cube_PS.hlsl" />
     <FxCompile Include="Core\HLSL\Cube_VS.hlsl" />
+    <FxCompile Include="Core\HLSL\Light_PS.hlsl" />
+    <FxCompile Include="Core\HLSL\Light_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\HLSL\Triangle.hlsli" />
     <None Include="Core\HLSL\Cube.hlsli" />
+    <None Include="Core\HLSL\Light.hlsli" />
+    <None Include="Core\HLSL\LightHelper.hlsli" />
   </ItemGroup>
 </Project>
