@@ -26,6 +26,7 @@
     <ClCompile Include="Core\Utils\d3dUtil.cpp" />
     <ClCompile Include="Core\Utils\Keyboard.cpp" />
     <ClCompile Include="Core\Utils\Mouse.cpp" />
+    <ClCompile Include="Core\Vertex.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +34,12 @@
     <ClInclude Include="Core\DXTrace.h" />
     <ClInclude Include="Core\GameApp.h" />
     <ClInclude Include="Core\GameTimer.h" />
+    <ClInclude Include="Core\Geometry.h" />
     <ClInclude Include="Core\Utils\d3dUtil.h" />
     <ClInclude Include="Core\Utils\Keyboard.h" />
     <ClInclude Include="Core\Utils\LightHelper.h" />
     <ClInclude Include="Core\Utils\Mouse.h" />
+    <ClInclude Include="Core\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Core\HLSL\Cube_PS.hlsl">
