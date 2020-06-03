@@ -3,6 +3,7 @@
 
 #include "d3dApp.h"
 #include "Utils/LightHelper.h"
+#include "Geometry.h"
 
 class GameApp : public D3DApp
 {
@@ -54,13 +55,15 @@ private:
 
 	bool InitEffect();
 	bool InitResource();
+	bool ResetMesh(const Geometry::MeshData<VertexPosNormalColor>& meshData);
 
 private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局 Vertex input layout
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区 Vertex buffer
 	ComPtr<ID3D11Buffer> m_pIndexBuffer;		// 索引缓冲区 Index Buffer
 	ComPtr<ID3D11Buffer> m_pConstantBuffer;		// 常量缓冲区 Constant buffer
-
+	ComPtr<ID3D11Buffer> m_pConstantBuffers[2];	// 常量缓冲区 Constant buffer
+	UINT m_IndexCount;							//绘制物体的索引数组大小 Draw the index array size of the object
 
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	// 顶点着色器 vertex Shader
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器 ps shader
@@ -71,6 +74,9 @@ private:
 	DirectionalLight m_DirLight;					// 默认环境光
 	PointLight m_PointLight;						// 默认点光
 	SpotLight m_SpotLight;						    // 默认汇聚光
+
+	ComPtr<ID3D11RasterizerState> m_pRSWireframe;	// 光栅化状态: 线框模式
+	bool m_IsWireframeMode;							// 当前是否为线框模式
 };
 
 
