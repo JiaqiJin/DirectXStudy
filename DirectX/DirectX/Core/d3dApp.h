@@ -3,6 +3,8 @@
 
 #include <wrl/client.h>
 #include <string>
+#include <d2d1.h>
+#include <dwrite.h>
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include "Utils/Mouse.h"
@@ -31,6 +33,7 @@ public:
 protected:
 	bool InitMainWindow();      // 窗口初始化
 	bool InitDirect3D();        // Direct3D初始化
+	bool InitDirect2D();		// Direct2D初始化
 
 	void CalculateFrameStats(); // 计算每秒帧数并在窗口显示
 
@@ -49,6 +52,10 @@ protected:
 	// 使用模板别名(C++11)简化类型名
 	template <class T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
+	// Direct2D
+	ComPtr<ID2D1Factory> m_pd2dFactory;					  // D2D工厂	可以用来创建各种资源
+	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;		  // D2D渲染目标 创建一个DXGI表面渲染目标
+	ComPtr<IDWriteFactory> m_pdwriteFactory;			  // DWrite工厂
 	// Direct3D 11
 	ComPtr<ID3D11Device> m_pd3dDevice;                    // D3D11设备
 	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文

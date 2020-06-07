@@ -21,7 +21,7 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
-	m_MainWndCaption(L"DirectX11 "),
+	m_MainWndCaption(L"Direct2D and Direct3D Interoperability"),
 	m_ClientWidth(800),
 	m_ClientHeight(600),
 	m_hMainWnd(nullptr),
@@ -95,6 +95,7 @@ int D3DApp::Run()
 			}
 		}
 	}
+
 	return (int)msg.wParam;
 }
 
@@ -104,6 +105,9 @@ bool D3DApp::Init()
 	m_pKeyboard = std::make_unique<DirectX::Keyboard>();
 
 	if (!InitMainWindow())
+		return false;
+
+	if (!InitDirect2D())
 		return false;
 
 	if (!InitDirect3D())
@@ -132,13 +136,15 @@ void D3DApp::OnResize()
 
 	// 重设交换链并且重新创建渲染目标视图
 	ComPtr<ID3D11Texture2D> backBuffer;
-	HR(m_pSwapChain->ResizeBuffers(1, m_ClientWidth, m_ClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+	HR(m_pSwapChain->ResizeBuffers(1, m_ClientWidth, m_ClientHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0));	// 注意此处DXGI_FORMAT_B8G8R8A8_UNORM
 	HR(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf())));
 	HR(m_pd3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_pRenderTargetView.GetAddressOf()));
 
 	// 设置调试对象名
 	D3D11SetDebugObjectName(backBuffer.Get(), "BackBuffer[0]");
+
 	backBuffer.Reset();
+
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 
@@ -148,7 +154,7 @@ void D3DApp::OnResize()
 	depthStencilDesc.ArraySize = 1;
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// 要使用 4X MSAA? --需要给交换链设置MASS参数
+	// 要使用 4X MSAA?
 	if (m_Enable4xMsaa)
 	{
 		depthStencilDesc.SampleDesc.Count = 4;
@@ -160,6 +166,7 @@ void D3DApp::OnResize()
 		depthStencilDesc.SampleDesc.Quality = 0;
 	}
 
+
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
@@ -168,6 +175,7 @@ void D3DApp::OnResize()
 	// 创建深度缓冲区以及深度模板视图
 	HR(m_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_pDepthStencilBuffer.GetAddressOf()));
 	HR(m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), nullptr, m_pDepthStencilView.GetAddressOf()));
+
 
 	// 将渲染目标视图和深度/模板缓冲区结合到管线
 	m_pd3dImmediateContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
@@ -376,12 +384,21 @@ bool D3DApp::InitMainWindow()
 
 }
 
+bool D3DApp::InitDirect2D()
+{
+	HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_pd2dFactory.GetAddressOf()));
+	HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
+		reinterpret_cast<IUnknown**>(m_pdwriteFactory.GetAddressOf())));
+
+	return true;
+}
+
 bool D3DApp::InitDirect3D()
 {
 	HRESULT hr = S_OK;
 
 	// 创建D3D设备 和 D3D设备上下文
-	UINT createDeviceFlags = 0;
+	UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;	// Direct2D需要支持BGRA格式
 #if defined(DEBUG) || defined(_DEBUG)  
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
