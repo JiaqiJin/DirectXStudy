@@ -42,6 +42,9 @@
     <ClCompile Include="Core\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Utils\WICTextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\GameTimer.h">
@@ -74,6 +77,9 @@
     <ClInclude Include="Core\Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\WICTextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Core\HLSL\Triangle_PS.hlsl" />
@@ -82,11 +88,17 @@
     <FxCompile Include="Core\HLSL\Cube_VS.hlsl" />
     <FxCompile Include="Core\HLSL\Light_PS.hlsl" />
     <FxCompile Include="Core\HLSL\Light_VS.hlsl" />
+    <FxCompile Include="Core\HLSL\Basic\Basic_VS_3D.hlsl" />
+    <FxCompile Include="Core\HLSL\Basic\Basic_PS_3D.hlsl" />
+    <FxCompile Include="Core\HLSL\Basic_PS.hlsl" />
+    <FxCompile Include="Core\HLSL\Basic_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core\HLSL\Triangle.hlsli" />
     <None Include="Core\HLSL\Cube.hlsli" />
     <None Include="Core\HLSL\Light.hlsli" />
     <None Include="Core\HLSL\LightHelper.hlsli" />
+    <None Include="Core\HLSL\Basic\Basic.hlsli" />
+    <None Include="Core\HLSL\Basic.hlsli" />
   </ItemGroup>
 </Project>
